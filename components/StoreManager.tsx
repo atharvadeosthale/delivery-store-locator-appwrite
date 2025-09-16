@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from "react";
+import { Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import MapPicker from './MapPicker';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import MapPicker from "./MapPicker";
+import { toast } from "sonner";
 
 interface Store {
   $id: string;
@@ -24,8 +24,11 @@ interface Store {
 export default function StoreManager() {
   const [stores, setStores] = useState<Store[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [newStoreName, setNewStoreName] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lon: number } | null>(null);
+  const [newStoreName, setNewStoreName] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,40 +37,42 @@ export default function StoreManager() {
 
   const fetchStores = async () => {
     try {
-      const response = await fetch('/api/store');
+      const response = await fetch("/api/store");
       const data = await response.json();
       setStores(data);
     } catch (error) {
-      toast.error('Failed to fetch stores');
+      console.log(error);
+      toast.error("Failed to fetch stores");
     }
   };
 
   const handleAddStore = async () => {
     if (!newStoreName || !selectedLocation) {
-      toast.error('Name and location required');
+      toast.error("Name and location required");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('/api/store', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: newStoreName,
-          location: selectedLocation
-        })
+          location: selectedLocation,
+        }),
       });
 
       if (response.ok) {
-        toast.success('Store added');
+        toast.success("Store added");
         setIsAddDialogOpen(false);
-        setNewStoreName('');
+        setNewStoreName("");
         setSelectedLocation(null);
         fetchStores();
       }
     } catch (error) {
-      toast.error('Failed to add store');
+      console.log(error);
+      toast.error("Failed to add store");
     } finally {
       setLoading(false);
     }
@@ -76,15 +81,16 @@ export default function StoreManager() {
   const handleDeleteStore = async (id: string) => {
     try {
       const response = await fetch(`/api/store?id=${id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       if (response.ok) {
-        toast.success('Store removed');
+        toast.success("Store removed");
         fetchStores();
       }
     } catch (error) {
-      toast.error('Failed to delete store');
+      console.log(error);
+      toast.error("Failed to delete store");
     }
   };
 
@@ -97,7 +103,7 @@ export default function StoreManager() {
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button 
+            <Button
               size="sm"
               variant="outline"
               className="h-10 px-4 text-sm border-zinc-800 bg-transparent hover:bg-zinc-900 text-white"
@@ -108,11 +114,15 @@ export default function StoreManager() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl border-zinc-800 bg-zinc-950">
             <DialogHeader>
-              <DialogTitle className="text-white font-medium">Add store location</DialogTitle>
+              <DialogTitle className="text-white font-medium">
+                Add store location
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div>
-                <Label htmlFor="store-name" className="text-xs text-zinc-400">Store name</Label>
+                <Label htmlFor="store-name" className="text-xs text-zinc-400">
+                  Store name
+                </Label>
                 <Input
                   id="store-name"
                   value={newStoreName}
@@ -125,23 +135,26 @@ export default function StoreManager() {
                 <Label className="text-xs text-zinc-400">Location</Label>
                 <div className="mt-1.5">
                   <MapPicker
-                    onLocationSelect={(lat, lon) => setSelectedLocation({ lat, lon })}
+                    onLocationSelect={(lat, lon) =>
+                      setSelectedLocation({ lat, lon })
+                    }
                     selectedLocation={selectedLocation}
                     height="280px"
                   />
                 </div>
                 {selectedLocation && (
                   <p className="text-xs text-zinc-500 mt-2 font-mono">
-                    {selectedLocation.lat.toFixed(6)}, {selectedLocation.lon.toFixed(6)}
+                    {selectedLocation.lat.toFixed(6)},{" "}
+                    {selectedLocation.lon.toFixed(6)}
                   </p>
                 )}
               </div>
-              <Button 
-                onClick={handleAddStore} 
+              <Button
+                onClick={handleAddStore}
                 disabled={loading || !newStoreName || !selectedLocation}
                 className="w-full bg-white hover:bg-zinc-100 text-black font-medium h-9"
               >
-                {loading ? 'Adding...' : 'Add store'}
+                {loading ? "Adding..." : "Add store"}
               </Button>
             </div>
           </DialogContent>
@@ -155,8 +168,8 @@ export default function StoreManager() {
           </div>
         ) : (
           stores.map((store) => (
-            <div 
-              key={store.$id} 
+            <div
+              key={store.$id}
               className="flex items-center justify-between p-5 bg-zinc-900/50 hover:bg-zinc-900 rounded-lg transition-colors"
             >
               <div>

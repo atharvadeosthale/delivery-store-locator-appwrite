@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     databaseId: "ecommerce",
     tableId: "stores",
     rowId: ID.unique(),
-    data: { name, location: [location.lat, location.lon] },
+    data: { name, location: [location.lon, location.lat] },
   });
 
   return NextResponse.json({
@@ -54,7 +54,7 @@ export async function DELETE(request: NextRequest) {
     });
   }
 
-  const store = await tablesdb.deleteRow({
+  await tablesdb.deleteRow({
     databaseId: "ecommerce",
     tableId: "stores",
     rowId: id,

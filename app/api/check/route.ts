@@ -46,12 +46,19 @@ export async function GET(request: NextRequest) {
   console.log("Serviceable stores:", serviceableStores);
 
   // Add distance calculation to each store
-  const storesWithDistance = serviceableStores.rows.map((store: any) => ({
-    ...store,
-    distance: Math.round(
-      calculateDistance(userLat, userLon, store.location[0], store.location[1])
-    ),
-  }));
+  const storesWithDistance = serviceableStores.rows.map(
+    (store): { name?: string; location?: number[]; distance?: number } => ({
+      ...store,
+      distance: Math.round(
+        calculateDistance(
+          userLat,
+          userLon,
+          store.location[1],
+          store.location[0]
+        )
+      ),
+    })
+  );
 
   return NextResponse.json({
     deliveryLocation: { lat, lon },

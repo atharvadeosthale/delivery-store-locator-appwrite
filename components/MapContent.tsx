@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
 
 interface MapContentProps {
   center: [number, number];
@@ -11,10 +11,10 @@ interface MapContentProps {
   height?: string;
 }
 
-function LocationSelector({ 
-  onLocationSelect, 
-  selectedLocation 
-}: { 
+function LocationSelector({
+  onLocationSelect,
+  selectedLocation,
+}: {
   onLocationSelect: (lat: number, lon: number) => void;
   selectedLocation?: { lat: number; lon: number } | null;
 }) {
@@ -33,18 +33,18 @@ function LocationSelector({
   return position ? <Marker position={position} /> : null;
 }
 
-export default function MapContent({ 
-  center, 
-  selectedLocation, 
+export default function MapContent({
+  center,
+  selectedLocation,
   onLocationSelect,
-  height = '400px' 
+  height = "400px",
 }: MapContentProps) {
   useEffect(() => {
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/leaflet/marker-icon-2x.png',
-      iconUrl: '/leaflet/marker-icon.png',
-      shadowUrl: '/leaflet/marker-shadow.png',
+      iconRetinaUrl: "/leaflet/marker-icon-2x.png",
+      iconUrl: "/leaflet/marker-icon.png",
+      shadowUrl: "/leaflet/marker-shadow.png",
     });
   }, []);
 
@@ -53,16 +53,16 @@ export default function MapContent({
       <MapContainer
         center={center}
         zoom={13}
-        style={{ height, width: '100%', background: '#18181b' }}
+        style={{ height, width: "100%", background: "#18181b" }}
         className="z-0"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
         />
-        <LocationSelector 
-          onLocationSelect={onLocationSelect} 
-          selectedLocation={selectedLocation} 
+        <LocationSelector
+          onLocationSelect={onLocationSelect}
+          selectedLocation={selectedLocation}
         />
       </MapContainer>
     </div>
